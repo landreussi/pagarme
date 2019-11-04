@@ -1,0 +1,19 @@
+{
+  "name": "pagarme",
+  "version": "0.0.1",
+  "description": "Pagar.me technical test",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/landreussi/pagarme.git"
+  },
+  "author": "Lucas Andreussi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/landreussi/pagarme/issues"
+  },
+  "homepage": "https://github.com/landreussi/pagarme#readme"
+}
