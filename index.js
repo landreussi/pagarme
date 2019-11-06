@@ -1,12 +1,12 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
-const dotEnv = require('dotenv-safe')
 const app = express()
 
-const config = require('./config')
+require('dotenv-safe').config()
 
-dotEnv.config()
+const config = require('./config')
+const errors = require('./utils/errors')
 
 app.use(
     morgan(
@@ -18,7 +18,8 @@ app.use(cors())
 app.use(express.json())
 app.set('connection',
     config.database.setup().then(() => {
-        console.log('done')
+        app.use('/', require('./modules'));
+        app.use('*', errors.errorHandler);
     })
 );
 
