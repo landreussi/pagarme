@@ -34,14 +34,15 @@ const _setRelationships = () => {
 
         if (model.relations) model.relations(models)
     }
-};
+}
 
 const setup = async () => {
     try {
         await sequelize.authenticate()
+        console.log('DB connection has been established successfully.')
         _setModels()
         _setRelationships()
-        console.log('DB connection has been established successfully.')
+        return sequelize.sync()
     } catch (error) {
         console.error('Unable to connect to the DB:', error.message)
         throw error

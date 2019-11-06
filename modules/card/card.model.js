@@ -8,7 +8,7 @@ module.exports = {
             primaryKey: true
         },
         number: {
-            type: Sequelize.NUMBER(4),
+            type: Sequelize.SMALLINT,
             allowNull: false
         },
         name: {
@@ -20,11 +20,11 @@ module.exports = {
             allowNull: false
         },
         cvv: {
-            type: Sequelize.NUMBER(3),
+            type: Sequelize.SMALLINT,
             allowNull: false
         }
     },
     relations: () => {
-
+        
     }
 }

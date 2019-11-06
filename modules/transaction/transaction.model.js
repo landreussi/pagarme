@@ -24,7 +24,8 @@ module.exports = {
             allowNull: false
         }
     },
-    relations: () => {
-
+    relations: models => {
+        const { card, transaction } = models
+        transaction.belongsTo(card)
     }
 }
