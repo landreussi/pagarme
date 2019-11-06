@@ -18,8 +18,9 @@ app.use(cors())
 app.use(express.json())
 app.set('connection',
     config.database.setup().then(() => {
-        app.use('/', require('./modules'));
-        app.use('*', errors.errorHandler);
+        app.use('/', require('./modules'))
+        app.use('*', errors.errorHandler)
     })
-);
+)
+app.listen(process.env.HTTP_PORT)
 

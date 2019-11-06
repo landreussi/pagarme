@@ -1,4 +1,6 @@
 const Sequelize = require('sequelize')
+const path = require('path')
+const glob = require('glob')
 
 const { DB_NAME, 
         DB_USERNAME, 
@@ -13,9 +15,32 @@ const sequelize = new Sequelize({
     dialect: 'postgres'
 })
 
+const models = {}
+const modelPaths = {}
+
+const _setModels = () => {
+    glob.sync('./**/**/*.model.js').forEach(modelPath => {
+        const model = require(path.resolve(modelPath))
+        const sqlModel = sequelize.define(model.name, model.entity, model.options)
+        models[model.name] = sqlModel
+        modelPaths[model.name] = modelPath
+    })
+}
+
+const _setRelationships = () => {
+    for (const key in modelPaths) {
+        const modelPath = modelPaths[key]
+        const model = require(path.resolve(modelPath))
+
+        if (model.relations) model.relations(models)
+    }
+};
+
 const setup = async () => {
     try {
         await sequelize.authenticate()
+        _setModels()
+        _setRelationships()
         console.log('DB connection has been established successfully.')
     } catch (error) {
         console.error('Unable to connect to the DB:', error.message)
@@ -26,4 +51,5 @@ const setup = async () => {
 module.exports = {
     sequelize,
     setup,
-};
+    models
+}
