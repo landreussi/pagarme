@@ -37,4 +37,4 @@ docker-compose.production.yml
 .vscode
 
 # Test coverage reports
-tests/coverage
+coverage
