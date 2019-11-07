@@ -19,13 +19,25 @@ module.exports = {
             type: Sequelize.ENUM(['debit_card', 'credit_card']),
             allowNull: false
         },
-        cardId: {
-            type: Sequelize.UUID,
+        cardNumber: {
+            type: Sequelize.SMALLINT,
+            allowNull: false
+        },
+        cardName: {
+            type: Sequelize.STRING,
+            allowNull: false
+        },
+        expirationDate: {
+            type: Sequelize.DATEONLY,
+            allowNull: false
+        },
+        cvv: {
+            type: Sequelize.SMALLINT,
             allowNull: false
         }
     },
     relations: models => {
-        const { card, transaction } = models
-        transaction.belongsTo(card)
+        const { transaction, payable } = models
+        transaction.hasMany(payable)
     }
 }
