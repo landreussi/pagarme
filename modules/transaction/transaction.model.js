@@ -1,12 +1,10 @@
 const Sequelize = require('sequelize')
+const { database } = require('../../config')
 
 module.exports = {
     name: 'transaction',
     entity: {
-        id: {
-            type: Sequelize.UUID,
-            primaryKey: true
-        },
+        id: database.pk,
         value: {
             type: Sequelize.DECIMAL(18, 2),
             allowNull: false

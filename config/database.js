@@ -49,8 +49,16 @@ const setup = async () => {
     }
 }
 
+const pk = {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+    comment: 'ID'
+}
+
 module.exports = {
     sequelize,
     setup,
-    models
+    models,
+    pk
 }

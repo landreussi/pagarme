@@ -7,6 +7,12 @@ const addPayable = async payable => {
     return await Payable.create(payable)
 }
 
+const getPayables = where => 
+    Payable.findAll({
+        where
+    })
+
 module.exports = {
-    addPayable
+    addPayable,
+    getPayables
 }

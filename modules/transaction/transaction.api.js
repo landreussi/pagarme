@@ -4,11 +4,12 @@ const router = express.Router()
 const { asyncHandler } = require('../../utils/errors')
 const service = require('./transaction.service')
 const payableService = require('../payable/payable.service')
+const { toISODate } = require('../../utils')
 
 router.get(
     '/',
     asyncHandler(async (req, res) => {
-        res.json('hey')
+        res.json(await service.getTransactions())
     })
 )
 
@@ -19,6 +20,7 @@ router.post(
 
         const CARD_NUMBER_LENGTH = 16
         const CVV_LENGTH = 3
+        const DAYS_IN_MONTH = 30
 
         invariant(value, 'Value is required')
         invariant(description, 'Description is required')
@@ -28,37 +30,46 @@ router.post(
         invariant(cardNumber.length === CARD_NUMBER_LENGTH, 'Card Number is incorrect')
         invariant(cvv.length === CVV_LENGTH, 'Verification Code is incorrect')
 
+        const month = expirationDate.slice(0, 2)
+        const year = expirationDate.slice(-4)
+
+        const expirationDateObject = new Date(year, month)
+
         const transaction = {
             value,
             description,
             method,
             cardName,
-            expirationDate: '01/' + expirationDate,
-            cardNumber: cardNumber.substring(cardNumber.length - 4).parseInt(),
-            cvv: cvv.parseInt()
+            expirationDate: toISODate(expirationDateObject),
+            cardNumber: Number(cardNumber.slice(-4)),
+            cvv: Number(cvv)
         }
-    
+
         const createdTransaction = await service.addTransaction(transaction)
 
         if (createdTransaction) {
-            const paymentDate = new Date()
+            const now = new Date()
+            const nextMonth = new Date()
+            nextMonth.setDate(now.getDate() + DAYS_IN_MONTH)
 
-            let fee = 0.3,
-                status = 'paid'
-
-            if (transaction.method === 'credit_card') {
-                paymentDate.setDate(paymentDate.getDate() + 30)
-                fee = 0.5
-                status = 'waiting_funds'
+            const methodData = {
+                credit_card: {
+                    status: 'waiting_funds',
+                    paymentDate: toISODate(nextMonth),
+                    value: value - (value * 0.05)
+                },
+                debit_card: {
+                    status: 'paid',
+                    paymentDate: toISODate(now),
+                    value: value - (value * 0.03)
+                }
             }
 
             const payable = {
                 transactionId: createdTransaction.id,
-                status,
-                paymentDate: paymentDate.toLocaleDateString(),
-                value: value - (value * fee)
+                ...methodData[method]
             }
-            
+
             await payableService.addPayable(payable)
         }
         res.json(createdTransaction)
