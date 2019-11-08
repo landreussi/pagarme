@@ -46,7 +46,7 @@ router.post(
         }
 
         const createdTransaction = await service.addTransaction(transaction)
-
+        let createdPayable
         if (createdTransaction) {
             const now = new Date()
             const nextMonth = new Date()
@@ -70,9 +70,12 @@ router.post(
                 ...methodData[method]
             }
 
-            await payableService.addPayable(payable)
+            createdPayable = await payableService.addPayable(payable)
         }
-        res.json(createdTransaction)
+        res.json({
+            createdTransaction,
+            createdPayable
+        })
     })
 )
 
