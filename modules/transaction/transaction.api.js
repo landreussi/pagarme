@@ -3,6 +3,7 @@ const invariant = require('invariant')
 const router = express.Router()
 const { asyncHandler } = require('../../utils/errors')
 const service = require('./transaction.service')
+const payableService = require('../payable/payable.service')
 
 router.get(
     '/',
@@ -32,12 +33,34 @@ router.post(
             description,
             method,
             cardName,
-            expirationDate,
+            expirationDate: '01/' + expirationDate,
             cardNumber: cardNumber.substring(cardNumber.length - 4).parseInt(),
             cvv: cvv.parseInt()
         }
-
+    
         const createdTransaction = await service.addTransaction(transaction)
+
+        if (createdTransaction) {
+            const paymentDate = new Date()
+
+            let fee = 0.3,
+                status = 'paid'
+
+            if (transaction.method === 'credit_card') {
+                paymentDate.setDate(paymentDate.getDate() + 30)
+                fee = 0.5
+                status = 'waiting_funds'
+            }
+
+            const payable = {
+                transactionId: createdTransaction.id,
+                status,
+                paymentDate: paymentDate.toLocaleDateString(),
+                value: value - (value * fee)
+            }
+            
+            await payableService.addPayable(payable)
+        }
         res.json(createdTransaction)
     })
 )

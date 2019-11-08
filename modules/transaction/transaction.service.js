@@ -1,8 +1,10 @@
+const invariant = require('invariant')
 const { database } = require('../../config') 
 const { transaction: Transaction } = database.models
 
-const addTransaction = transaction => {
-
+const addTransaction = async transaction => {
+    invariant(transaction, 'Transaction data is required')
+    return await Transaction.create(transaction)
 }
 
 module.exports = {
