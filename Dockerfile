@@ -4,12 +4,8 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN npm i --silent
-RUN npm run build
-RUN rm -rf tests
-RUN rm -rf api
-RUN mv dist api -f
+RUN npm i --silent --only=prod
 
-EXPOSE 3000
+EXPOSE 8080
 
 ENTRYPOINT ["/usr/local/bin/npm", "start"]

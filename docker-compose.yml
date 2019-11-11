@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  pagarme:
+    image: pagarme:latest
+    ports:
+      - 8080:8080
+    links:
+      - "db:postgres"
+    depends_on:
+      - db 
+
+  db:
+    image: postgres:10.6-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: pagarme
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pagarme123
+    ports:
+      - 5432:5432

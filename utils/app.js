@@ -4,7 +4,9 @@ const getExpressApp = async () => {
     const morgan = require('morgan')
     const app = express()
 
-    require('dotenv-safe').config()
+    require('dotenv').config({
+        path: `.env.${process.env.NODE_ENV}`
+    })
 
     const config = require('../config')
     const errors = require('./errors')
