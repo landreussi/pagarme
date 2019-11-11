@@ -12,13 +12,14 @@ describe('Test Payables', () => {
             .expect(200)
             .then(response => {
                 const payables = JSON.parse(response.text)
+                const statuses = [ 'paids', 'waitingFunds' ]
                 
-                expect(payables.paids).toBeTruthy()
-                expect(payables.waitingFunds).toBeTruthy()
-                expect(typeof payables.paids.total).toBe('number')
-                expect(typeof payables.waitingFunds.total).toBe('number')
-                expect(Array.isArray(payables.paids.list)).toBeTruthy()
-                expect(Array.isArray(payables.waitingFunds.list)).toBeTruthy()
+                for (const index in statuses) {
+                    expect(payables[statuses[index]]).toBeTruthy()
+                    expect(typeof payables[statuses[index]].total).toBe('number')
+                    expect(Array.isArray(payables[statuses[index]].list)).toBeTruthy()
+                }
             })
+            .catch(error => expect(error).not.toBeDefined())
     )
 })

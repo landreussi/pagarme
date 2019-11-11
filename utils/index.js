@@ -1,4 +1,5 @@
 const toISODate = date => date.toISOString().split('T')[0]
+const getExpressApp = require('./app')
 
 const withPagination = (options, pagination = {}) => {
     const limit = pagination.limit ? Number(pagination.limit) : 50
@@ -9,5 +10,6 @@ const withPagination = (options, pagination = {}) => {
 
 module.exports = {
     toISODate, 
-    withPagination
+    withPagination,
+    getExpressApp
 }
