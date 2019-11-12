@@ -11,9 +11,11 @@ router.get(
             service.getPayables({ status: 'waiting_funds' })
         ])
 
+        const sumValues = (previous, payable) => previous + Number(payable.value)
+
         const total = {
-            paids: paids.reduce((previous, paid) => previous + Number(paid.value), 0),
-            waitingFunds: waitingFunds.reduce((previous, waitingFund) => previous + Number(waitingFund.value), 0)
+            paids: paids.reduce(sumValues, 0),
+            waitingFunds: waitingFunds.reduce(sumValues, 0)
         }
 
         res.json({
